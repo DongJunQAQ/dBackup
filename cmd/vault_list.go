@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"dBackup/vault"
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +10,7 @@ var listCmd = &cobra.Command{
 	Short: "列出所有备份存储库",
 	Long:  `列出所有备份存储库`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		vault.ListVault()
 	},
 }
 

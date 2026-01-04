@@ -8,7 +8,7 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/region"
 )
 
-func listVault() { //列出备份存储库
+func ListVault() { //列出备份存储库
 	//ak := os.Getenv("CLOUD_SDK_AK")
 	ak := "HPUALK8VIW9T9AGYL7QM"
 	//sk := os.Getenv("CLOUD_SDK_SK")
