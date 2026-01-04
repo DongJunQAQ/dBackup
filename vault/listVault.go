@@ -5,7 +5,7 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	cbr "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/model"
-	region "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/region"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/region"
 )
 
 func listVault() { //列出备份存储库
@@ -14,16 +14,17 @@ func listVault() { //列出备份存储库
 	//sk := os.Getenv("CLOUD_SDK_SK")
 	sk := "Zz29pXObYTl4ynzcipz3ECdgmcljZAFKx5GOetzC"
 
-	auth := basic.NewCredentialsBuilder().
+	auth, _ := basic.NewCredentialsBuilder().
 		WithAk(ak).
 		WithSk(sk).
-		Build()
+		SafeBuild()
 
-	client := cbr.NewCbrClient(
-		cbr.CbrClientBuilder().
-			WithRegion(region.ValueOf("cn-east-3")).
-			WithCredential(auth).
-			Build())
+	reg, _ := region.SafeValueOf("cn-east-3")
+	hcClient, _ := cbr.CbrClientBuilder().
+		WithRegion(reg).
+		WithCredential(auth).
+		SafeBuild()
+	client := cbr.NewCbrClient(hcClient)
 
 	request := &model.ListVaultRequest{}
 	response, err := client.ListVault(request)
