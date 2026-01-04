@@ -29,7 +29,7 @@ func ListVault() { //列出备份存储库
 	request := &model.ListVaultRequest{}
 	response, err := client.ListVault(request)
 	if err == nil {
-		fmt.Printf("%+v\n", response)
+		fmt.Printf("%+v\n", *response.Vaults)
 	} else {
 		fmt.Println(err)
 	}
