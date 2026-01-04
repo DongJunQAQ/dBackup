@@ -15,7 +15,7 @@ func cbrAuth() *cbr.CbrClient { //云备份服务的身份验证信息
 		WithAk(ak).
 		WithSk(sk).
 		SafeBuild()
-	reg, _ := region.SafeValueOf("cn-east-3")
+	reg, _ := region.SafeValueOf("cn-east-3") //华东-上海一
 	hcClient, _ := cbr.CbrClientBuilder().
 		WithRegion(reg).
 		WithCredential(auth).
