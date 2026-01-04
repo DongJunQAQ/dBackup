@@ -2,27 +2,11 @@ package vault
 
 import (
 	"fmt"
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
-	cbr "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/model"
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/region"
 )
 
 func CreateVault(name string, size int32) {
-	ak := "HPUALK8VIW9T9AGYL7QM"
-	sk := "Zz29pXObYTl4ynzcipz3ECdgmcljZAFKx5GOetzC"
-
-	auth := basic.NewCredentialsBuilder().
-		WithAk(ak).
-		WithSk(sk).
-		Build()
-
-	client := cbr.NewCbrClient(
-		cbr.CbrClientBuilder().
-			WithRegion(region.ValueOf("cn-east-3")).
-			WithCredential(auth).
-			Build())
-
+	client := cbrAuth()
 	request := &model.CreateVaultRequest{}
 	chargingModeBilling := model.GetBillingCreateChargingModeEnum().POST_PAID
 	isAutoRenewBilling := false
