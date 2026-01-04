@@ -5,7 +5,7 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/model"
 )
 
-func CreateVault(name string, size int32) {
+func CreateVault(name string, size int32) error { //创建存储库
 	client := cbrAuth()
 	request := &model.CreateVaultRequest{}
 	chargingModeBilling := model.GetBillingCreateChargingModeEnum().POST_PAID
@@ -41,7 +41,8 @@ func CreateVault(name string, size int32) {
 	response, err := client.CreateVault(request)
 	if err == nil {
 		fmt.Printf("%+v\n", response)
+		return nil
 	} else {
-		fmt.Println(err)
+		return err
 	}
 }

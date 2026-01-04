@@ -7,6 +7,8 @@ func TestListVault(t *testing.T) {
 }
 
 func TestCreateVault(t *testing.T) {
-	CreateVault("vault-test", 20)
-	//如何捕获这里测试时的错误
+	err := CreateVault("vault-test", 20)
+	if err != nil {
+		t.Fatalf("测试失败: %v", err)
+	}
 }
