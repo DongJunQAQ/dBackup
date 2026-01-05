@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"dBackup/vault"
 	"github.com/spf13/cobra"
 )
 
@@ -9,8 +9,11 @@ var createCmd = &cobra.Command{
 	Use:     "create",
 	Aliases: []string{"c"},
 	Short:   "创建备份存储库",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("create called")
+	RunE: func(cmd *cobra.Command, args []string) error { //规范化的错误处理
+		//根据flag名称获取命令行中flag对应的值
+		vaultName, _ := cmd.Flags().GetString("name")
+		vaultSize, _ := cmd.Flags().GetInt32("size")
+		return vault.CreateVault(vaultName, vaultSize)
 	},
 }
 
@@ -22,9 +25,6 @@ func init() {
 	createCmd.Flags().StringVarP(&vaultName, "name", "n", "", "存储库名称")
 	createCmd.Flags().Int32VarP(&vaultSize, "size", "s", 0, "存储库大小")
 	//设置必选flag
-	err := createCmd.MarkFlagRequired("name")
-	err = createCmd.MarkFlagRequired("size")
-	if err != nil {
-		return
-	}
+	_ = createCmd.MarkFlagRequired("name")
+	_ = createCmd.MarkFlagRequired("size")
 }
