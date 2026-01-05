@@ -41,7 +41,7 @@ func CreateVault(name string, size int32) error { //创建存储库
 	response, err := client.CreateVault(request)
 	if err == nil {
 		if response.Vault != nil {
-			fmt.Printf(response.Vault.Id)
+			fmt.Println(response.Vault.Id)
 		}
 		return nil
 	} else {
