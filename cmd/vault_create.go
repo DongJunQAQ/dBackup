@@ -6,8 +6,9 @@ import (
 )
 
 var createCmd = &cobra.Command{
-	Use:   "create",
-	Short: "创建备份存储库",
+	Use:     "create",
+	Aliases: []string{"c"},
+	Short:   "创建备份存储库",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("create called")
 	},
