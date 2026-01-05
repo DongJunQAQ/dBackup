@@ -12,7 +12,6 @@ func ListVault() { //列出备份存储库
 	if err == nil {
 		fmt.Printf("%-36s | %-15s | %-5s | %-s\n", "ID", "Name", "Size", "Resources")
 		fmt.Println("--------------------------------------------------------------------------------")
-		// 检查 Vaults 是否为空
 		if response.Vaults != nil {
 			for _, v := range *response.Vaults {
 				size := 0
