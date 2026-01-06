@@ -23,8 +23,8 @@ func init() {
 	var resourcesID string
 	var resourcesType string
 	//添加本地flag
-	addCmd.Flags().StringVarP(&vaultId, "vault", "v", "", "存储库ID (如ad6910b3-6c77-45bb-8651-276adce80fb8)")
-	addCmd.Flags().StringVarP(&resourcesID, "resources", "r", "", "备份资源ID (如cb77b86f-6e06-4f29-96e7-ecbc012d9816)")
+	addCmd.Flags().StringVarP(&vaultId, "vault", "v", "", "存储库ID (格式为xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)")
+	addCmd.Flags().StringVarP(&resourcesID, "resources", "r", "", "备份资源ID (格式为xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)")
 	addCmd.Flags().StringVarP(&resourcesType, "type", "t", "", "备份资源类型 (服务器:server, 磁盘:volume)")
 	//设置必选flag
 	_ = addCmd.MarkFlagRequired("vault")
