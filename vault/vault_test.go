@@ -26,7 +26,7 @@ func TestAddResources(t *testing.T) {
 		resourcesType string
 		expectedErr   error
 	}{ //定义并初始化一个匿名结构体切片
-		{"AddNew", "ad6910b3-6c77-45bb-8651-276adce80fb8", "cb77b86f-6e06-4f29-96e7-ecbc012d9816", "server", nil}, //需实时填写新资源的ID
+		{"AddNew", "ad6910b3-6c77-45bb-8651-276adce80fb8", "0a28470b-7f52-4fc6-97a0-68dced426e08", "server", nil}, //需实时填写新资源的ID
 		{"UnknownType", "77c1fc62-2db4-4ff8-87c4-019459901073", "3d562067-bb98-48b3-b1a1-3a325af075be", "server123", ErrUnknownType},
 		{"NotExists", "88888888-8888-8888-8888-888888888888", "88888888-8888-8888-8888-888888888888", "server", ErrNotExists},
 	}
