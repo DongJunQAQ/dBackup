@@ -29,6 +29,7 @@ func TestAddResources(t *testing.T) {
 		{"AddNew", "ad6910b3-6c77-45bb-8651-276adce80fb8", "0a28470b-7f52-4fc6-97a0-68dced426e08", "server", nil}, //需实时填写新资源的ID
 		{"UnknownType", "77c1fc62-2db4-4ff8-87c4-019459901073", "3d562067-bb98-48b3-b1a1-3a325af075be", "server123", ErrUnknownType},
 		{"NotExists", "88888888-8888-8888-8888-888888888888", "88888888-8888-8888-8888-888888888888", "server", ErrNotExists},
+		//由于华为云的CBR服务会优先检查ID对应的资源是否存在，即格式有误的错误会被当成资源不存在，所以这里没有格式有误的测试案例
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
