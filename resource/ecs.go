@@ -12,7 +12,6 @@ func ListEcs() {
 	request.Limit = &limitRequest
 	response, err := client.NovaListServers(request)
 	if err != nil {
-		pterm.Warning.Println("未找到任何ECS服务器实例")
 		return
 	}
 	resTableData := pterm.TableData{
