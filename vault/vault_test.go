@@ -56,6 +56,7 @@ func TestCreateCheckpoint(t *testing.T) {
 	}{
 		{"ExistsVaultCreateCheckpoint", "e195589e-7222-41ac-a28a-b92037a8bf68", nil}, //对已存在的存储库创建检查点
 		{"NotExistsVault", "88888888-8888-8888-8888-888888888888", ErrNotExists},     //对不存在的存储库创建检查点
+		{"ErrFormat", "88888888-8888-8888-8888-8888888888889", ErrFormat},            //为ID格式错误的存储库创建检查点
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
