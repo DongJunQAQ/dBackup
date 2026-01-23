@@ -13,7 +13,7 @@ var (
 	ErrFormat      = errors.New("ID格式有误")
 )
 
-func cbrAuth() *cbr.CbrClient { //云备份服务的身份验证信息
+func CbrAuth() *cbr.CbrClient { //云备份服务的身份验证信息
 	//ak := os.Getenv("CLOUD_SDK_AK")
 	ak := "HPUALK8VIW9T9AGYL7QM"
 	//sk := os.Getenv("CLOUD_SDK_SK")

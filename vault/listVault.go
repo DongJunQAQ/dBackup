@@ -7,7 +7,7 @@ import (
 )
 
 func ListVault() { //列出备份存储库
-	client := cbrAuth()
+	client := CbrAuth()
 	request := &model.ListVaultRequest{}
 	response, err := client.ListVault(request)
 	if err == nil {

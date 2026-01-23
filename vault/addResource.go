@@ -17,7 +17,7 @@ func AddResources(vaultId string, resourcesID string, resourcesType string) erro
 	default:
 		return fmt.Errorf("%w: %s", ErrUnknownType, resourcesType)
 	}
-	client := cbrAuth()
+	client := CbrAuth()
 	request := &model.AddVaultResourceRequest{}
 	request.VaultId = vaultId
 	var listResourcesbody = []model.ResourceCreate{

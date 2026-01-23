@@ -6,7 +6,7 @@ import (
 )
 
 func CreateVault(name string, size int32) error { //创建存储库
-	client := cbrAuth()
+	client := CbrAuth()
 	request := &model.CreateVaultRequest{}
 	chargingModeBilling := model.GetBillingCreateChargingModeEnum().POST_PAID
 	isAutoRenewBilling := false
