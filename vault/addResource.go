@@ -7,12 +7,6 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/model"
 )
 
-var (
-	ErrUnknownType = errors.New("未知类型")
-	ErrNotExists   = errors.New("存储库或资源不存在")
-	ErrFormat      = errors.New("ID格式有误")
-)
-
 func AddResources(vaultId string, resourcesID string, resourcesType string) error { //往存储库中添加资源
 	convertedType := ""    //转换后的类型
 	switch resourcesType { //资源类型转换
