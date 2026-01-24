@@ -15,7 +15,7 @@ func ListEcs() {
 		return
 	}
 	resTableData := pterm.TableData{
-		{"ECS ID", "ECS Name"}, //初始化表格数据，第一行默认为表头
+		{"服务器ID", "服务器名称"}, //初始化表格数据，第一行默认为表头
 	}
 	if response.Servers != nil { //遍历结果并将数据填充到tableData中
 		for _, server := range *response.Servers {
