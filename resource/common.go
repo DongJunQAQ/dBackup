@@ -1,14 +1,17 @@
 package resource
 
 import (
+	dbakauth "dBackup/auth"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	ecs "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ecs/v2"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ecs/v2/region"
 )
 
 func EesAuth() *ecs.EcsClient {
-	ak := "HPUALK8VIW9T9AGYL7QM"
-	sk := "Zz29pXObYTl4ynzcipz3ECdgmcljZAFKx5GOetzC"
+	ak, sk, err := dbakauth.LoadAkSk() //从文件中读取ak和sk
+	if err != nil {
+		panic(err)
+	}
 	auth, _ := basic.NewCredentialsBuilder().
 		WithAk(ak).
 		WithSk(sk).
