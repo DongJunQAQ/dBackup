@@ -30,9 +30,10 @@ func TestSaveAkSk(t *testing.T) {
 }
 
 func TestLoadAkSk(t *testing.T) {
-	aksk, err := LoadAkSk()
+	ak, sk, err := LoadAkSk()
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println(aksk)
+	fmt.Println("AK:", ak)
+	fmt.Println("SK:", sk)
 }

@@ -52,19 +52,19 @@ func SaveAkSk(ak string, sk string) { //保存ak和sk至本地文件
 	pterm.Success.Printf("AK/SK已安全保存至: %s\n", filePath)
 }
 
-func LoadAkSk() (*Cert, error) { //从本地文件中读取加密后的ak/sk并解密
+func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的ak/sk并解密
 	// 1. 获取家目录并构建路径
 	homeDir, _ := os.UserHomeDir()
 	filePath := filepath.Join(homeDir, ".dbackup_config.json")
 	// 2. 读取文件内容
 	fileData, err := os.ReadFile(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("读取文件失败: %v", err)
+		return "", "", fmt.Errorf("读取文件失败: %v", err)
 	}
 	// 3. 解析外层 JSON (获取 {"auth": "..."} 中的字符串)
 	var wrapper map[string]string
 	if err := sonic.Unmarshal(fileData, &wrapper); err != nil {
-		return nil, fmt.Errorf("文件格式解析失败: %v", err)
+		return "", "", fmt.Errorf("文件格式解析失败: %v", err)
 	}
 	encryptedBase64, _ := wrapper["auth"]
 	// 4. Base64 解码密文
@@ -74,16 +74,16 @@ func LoadAkSk() (*Cert, error) { //从本地文件中读取加密后的ak/sk并�
 	gcm, _ := cipher.NewGCM(block)
 	nonceSize := gcm.NonceSize()
 	if len(ciphertext) < nonceSize {
-		return nil, fmt.Errorf("密文数据过短")
+		return "", "", fmt.Errorf("密文数据过短")
 	}
 	// 6. 拆分 Nonce 和 密文，并执行解密
 	nonce, actualCiphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
 	plaintext, err := gcm.Open(nil, nonce, actualCiphertext, nil)
 	if err != nil {
-		return nil, fmt.Errorf("解密校验失败（密钥不匹配或数据损坏）")
+		return "", "", fmt.Errorf("解密校验失败（密钥不匹配或数据损坏）")
 	}
 	// 7. 将解密后的明文转为 Config 结构体
 	var aksk Cert
 	_ = sonic.Unmarshal(plaintext, &aksk)
-	return &aksk, nil
+	return aksk.AK, aksk.SK, nil
 }
