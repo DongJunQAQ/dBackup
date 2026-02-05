@@ -8,12 +8,12 @@ import (
 	"io"
 )
 
-func getSecret() []byte { //通过真随机的方式获取密钥
-	secret := make([]byte, 32) //由于密钥长度为32字节，因此需要生成32字节的随机数
-	if _, err := io.ReadFull(rand.Reader, secret); err != nil {
+func genRandSecret() []byte { //通过真随机的方式动态生成密钥
+	randSecret := make([]byte, 32)                                  //由于密钥长度为32字节，因此需要32字节的空间
+	if _, err := io.ReadFull(rand.Reader, randSecret); err != nil { //生成32字节的随机数
 		panic(err)
 	}
-	return secret
+	return randSecret
 }
 
 func encrypt(data []byte, key []byte) (string, error) { //使用AES-GCM算法加密ak和sk

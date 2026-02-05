@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/bytedance/sonic"
 	"testing"
@@ -11,12 +12,17 @@ var conf = Cert{
 	SK: "Zz29pXObYTl4ynzcipz3ECdgmcljZAFKx5GOetzC",
 }
 
+func TestSecret(t *testing.T) {
+	fmt.Println("随机生成的密钥([]byte类型):", genRandSecret())
+	fmt.Println("随机生成的密钥(String类型):", base64.StdEncoding.EncodeToString(genRandSecret()))
+}
+
 func TestEncrypt(t *testing.T) {
-	if len(secret) != 32 {
+	if len(currentSecret) != 32 {
 		t.Errorf("密钥长度不为32位")
 	}
 	data, _ := sonic.Marshal(conf)
-	res, err := encrypt(data, secret)
+	res, err := encrypt(data, currentSecret)
 	if err != nil {
 		t.Error(err)
 	}
@@ -24,9 +30,7 @@ func TestEncrypt(t *testing.T) {
 }
 
 func TestSaveAkSk(t *testing.T) {
-	ak := "HPUALK8VIW9T9AGYL7QM"
-	sk := "Zz29pXObYTl4ynzcipz3ECdgmcljZAFKx5GOetzC"
-	SaveAkSk(ak, sk)
+	SaveAkSk(conf.AK, conf.SK)
 }
 
 func TestLoadAkSk(t *testing.T) {

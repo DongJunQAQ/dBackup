@@ -16,8 +16,8 @@ type Cert struct { //凭证信息结构体
 	SK string `json:"sk"`
 }
 
-// var secret = getSecret() //动态获取密钥
-var secret = []byte("a-very-secret-key-32-characters-") //静态密钥
+var currentSecret = genRandSecret()                              //动态生成[]byte类型的密钥
+var secretStr = base64.StdEncoding.EncodeToString(currentSecret) //将密钥转换为String类型
 
 func SaveAkSk(ak string, sk string) { //保存ak和sk至本地文件
 	conf := Cert{
@@ -34,13 +34,14 @@ func SaveAkSk(ak string, sk string) { //保存ak和sk至本地文件
 	//2.序列化ak/sk结构体
 	content, _ := sonic.Marshal(conf) //将结构体序列化为[]byte类型
 	//3.加密ak/sk结构体
-	encryptContent, err := encrypt(content, secret)
+	encryptContent, err := encrypt(content, currentSecret)
 	if err != nil {
 		fmt.Println("加密密钥失败:", err)
 	}
-	//4.封装为写入文件的JSON格式: {"auth": "..."}
+	//4.封装为写入文件的JSON格式: {"secret": "...","auth": "..."}
 	res := map[string]string{
-		"auth": encryptContent,
+		"secret": secretStr,
+		"auth":   encryptContent,
 	}
 	resJson, _ := sonic.Marshal(res)
 	//5.将加密后的内容写入文件
@@ -70,8 +71,9 @@ func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的
 	// 4. Base64 解码密文
 	ciphertext, _ := base64.StdEncoding.DecodeString(encryptedBase64)
 	// 5. 初始化 AES-GCM 解密器
-	block, _ := aes.NewCipher(secret)
-	gcm, _ := cipher.NewGCM(block)
+	realSecret, _ := base64.StdEncoding.DecodeString(wrapper["secret"]) //从配置文件中读取secret字段以获取密钥
+	block, _ := aes.NewCipher(realSecret)
+	gcm, _ := cipher.NewGCM(block) //这里需要捕获此错误并返回报错信息
 	nonceSize := gcm.NonceSize()
 	if len(ciphertext) < nonceSize {
 		return "", "", fmt.Errorf("密文数据过短")
