@@ -83,7 +83,7 @@ func LoadAkSk() (*Cert, error) { //从本地文件中读取加密后的ak/sk并�
 		return nil, fmt.Errorf("解密校验失败（密钥不匹配或数据损坏）")
 	}
 	// 7. 将解密后的明文转为 Config 结构体
-	var conf Cert
-	_ = sonic.Unmarshal(plaintext, &conf)
-	return &conf, nil
+	var aksk Cert
+	_ = sonic.Unmarshal(plaintext, &aksk)
+	return &aksk, nil
 }
