@@ -16,8 +16,8 @@ type Cert struct { //凭证信息结构体
 	SK string `json:"sk"`
 }
 
-// var secret = getSecret() //动态获取密钥，这里需要使用单例模式
-var secret = []byte("a-very-secret-key-32-characters-")
+// var secret = getSecret() //动态获取密钥
+var secret = []byte("a-very-secret-key-32-characters-") //静态密钥
 
 func SaveAkSk(ak string, sk string) { //保存ak和sk至本地文件
 	conf := Cert{
