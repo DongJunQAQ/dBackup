@@ -6,6 +6,8 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	cbr "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/region"
+	"github.com/pterm/pterm"
+	"os"
 )
 
 var (
@@ -17,7 +19,8 @@ var (
 func CbrAuth() *cbr.CbrClient { //云备份服务的身份验证信息
 	ak, sk, err := dbakauth.LoadAkSk() //从文件中读取ak和sk
 	if err != nil {
-		panic(err)
+		pterm.Error.Printf("错误: %v\n", err)
+		os.Exit(1) //显式退出
 	}
 	auth, _ := basic.NewCredentialsBuilder().
 		WithAk(ak).

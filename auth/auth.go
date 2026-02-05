@@ -59,7 +59,7 @@ func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的
 	// 2. 读取文件内容
 	fileData, err := os.ReadFile(filePath)
 	if err != nil {
-		return "", "", fmt.Errorf("读取文件失败: %v", err)
+		return "", "", fmt.Errorf("读取配置文件失败(请先使用login子命令登录): %v", err)
 	}
 	// 3. 解析外层 JSON (获取 {"auth": "..."} 中的字符串)
 	var wrapper map[string]string
