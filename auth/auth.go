@@ -72,7 +72,11 @@ func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的
 	ciphertext, _ := base64.StdEncoding.DecodeString(encryptedBase64)
 	// 5. 初始化 AES-GCM 解密器
 	realSecret, _ := base64.StdEncoding.DecodeString(wrapper["secret"]) //从配置文件中读取secret字段以获取密钥
-	block, _ := aes.NewCipher(realSecret)
+	block, blockErr := aes.NewCipher(realSecret)
+	if blockErr != nil {
+		pterm.Error.Printf("错误: secret可能已被篡改: %v\n", blockErr)
+		os.Exit(1)
+	}
 	gcm, _ := cipher.NewGCM(block) //这里需要捕获此错误并返回报错信息
 	nonceSize := gcm.NonceSize()
 	if len(ciphertext) < nonceSize {
