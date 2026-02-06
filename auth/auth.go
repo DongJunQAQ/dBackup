@@ -67,15 +67,25 @@ func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的
 	if err := sonic.Unmarshal(fileData, &wrapper); err != nil {
 		return "", "", fmt.Errorf("文件格式解析失败: %v", err)
 	}
-	encryptedBase64, _ := wrapper["auth"]
+	authBase64 := wrapper["auth"]
+	//标准的Base64编码是4字符一组，如果在合法的Base64字符串末尾加上不足4字符的内容，
+	//Base64解码器在处理时，如果这多出的字符不足以构成一个新的有效字节，
+	//解码器可能会忽略末尾不完整的位，也就使得在密文后面添加了不足4字符的内容后会导致密文依旧有效，
+	//因此需要添加Base64内容是否为4的倍数的校验
+	if len(authBase64)%4 != 0 {
+		return "", "", fmt.Errorf("auth长度错误")
+	}
 	// 4. Base64 解码密文
-	ciphertext, _ := base64.StdEncoding.DecodeString(encryptedBase64)
+	ciphertext, _ := base64.StdEncoding.DecodeString(authBase64)
 	// 5. 初始化 AES-GCM 解密器
-	realSecret, _ := base64.StdEncoding.DecodeString(wrapper["secret"]) //从配置文件中读取secret字段以获取密钥
+	secretBase64 := wrapper["secret"]
+	if len(secretBase64)%4 != 0 {
+		return "", "", fmt.Errorf("secret长度错误")
+	}
+	realSecret, _ := base64.StdEncoding.DecodeString(secretBase64) //从配置文件中读取secret字段以获取密钥
 	block, blockErr := aes.NewCipher(realSecret)
 	if blockErr != nil {
-		pterm.Error.Printf("错误: secret可能已被篡改: %v\n", blockErr)
-		os.Exit(1)
+		return "", "", fmt.Errorf("secret可能已被篡改")
 	}
 	gcm, _ := cipher.NewGCM(block) //这里需要捕获此错误并返回报错信息
 	nonceSize := gcm.NonceSize()
