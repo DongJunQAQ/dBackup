@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
 	"encoding/base64"
 	"fmt"
 	"github.com/bytedance/sonic"
@@ -83,20 +81,10 @@ func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的
 		return "", "", fmt.Errorf("secret长度错误")
 	}
 	realSecret, _ := base64.StdEncoding.DecodeString(secretBase64) //从配置文件中读取secret字段以获取密钥
-	block, blockErr := aes.NewCipher(realSecret)
-	if blockErr != nil {
-		return "", "", fmt.Errorf("secret可能已被篡改")
-	}
-	gcm, _ := cipher.NewGCM(block) //这里需要捕获此错误并返回报错信息
-	nonceSize := gcm.NonceSize()
-	if len(ciphertext) < nonceSize {
-		return "", "", fmt.Errorf("密文数据过短")
-	}
-	// 6. 拆分 Nonce 和 密文，并执行解密
-	nonce, actualCiphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
-	plaintext, err := gcm.Open(nil, nonce, actualCiphertext, nil)
+	//6.解密密钥
+	plaintext, err := decrypt(ciphertext, realSecret)
 	if err != nil {
-		return "", "", fmt.Errorf("解密校验失败（密钥不匹配或数据损坏）")
+		return "", "", fmt.Errorf("解密密钥失败: %v", err)
 	}
 	// 7. 将解密后的明文转为 Config 结构体
 	var aksk Cert

@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"io"
 )
 
@@ -31,4 +32,22 @@ func encrypt(data []byte, key []byte) (string, error) { //使用AES-GCM算法加
 	}
 	ciphertext := gcm.Seal(nonce, nonce, data, nil) //加密并附加nonce
 	return base64.StdEncoding.EncodeToString(ciphertext), nil
+}
+
+func decrypt(ciphertext, realSecret []byte) ([]byte, error) { //解密
+	block, blockErr := aes.NewCipher(realSecret)
+	if blockErr != nil {
+		return []byte(""), fmt.Errorf("secret可能已被篡改")
+	}
+	gcm, _ := cipher.NewGCM(block)
+	nonceSize := gcm.NonceSize()
+	if len(ciphertext) < nonceSize {
+		return []byte(""), fmt.Errorf("密文数据过短")
+	}
+	nonce, actualCiphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
+	plaintext, err := gcm.Open(nil, nonce, actualCiphertext, nil)
+	if err != nil {
+		return []byte(""), fmt.Errorf("解密校验失败（密钥不匹配或数据损坏）")
+	}
+	return plaintext, nil
 }
