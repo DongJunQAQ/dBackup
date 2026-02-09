@@ -9,12 +9,12 @@ import (
 	"io"
 )
 
-func genRandSecret() []byte { //通过真随机的方式动态生成32字节的密钥
-	randSecret := make([]byte, 32)                                  //由于密钥长度为32字节，因此需要32字节的空间
-	if _, err := io.ReadFull(rand.Reader, randSecret); err != nil { //生成32字节的随机数
+func genTrueRand(size int) []byte { //根据指定的字节大小生成真随机数，如传入32表示生成32字节的真随机数
+	trueRand := make([]byte, size)
+	if _, err := io.ReadFull(rand.Reader, trueRand); err != nil {
 		panic(err)
 	}
-	return randSecret
+	return trueRand
 }
 
 func encrypt(plaintext, secret []byte) (string, error) { //使用AES-GCM算法加密ak和sk
@@ -26,11 +26,8 @@ func encrypt(plaintext, secret []byte) (string, error) { //使用AES-GCM算法�
 	if err != nil {
 		return "", err
 	}
-	nonce := make([]byte, gcm.NonceSize())                    //生成随机Nonce(临时随机数，Number used once)，NonceSize()通常是12字节，对于同一个密钥，绝对不能使用相同的Nonce加密两段不同的数据
-	if _, err = io.ReadFull(rand.Reader, nonce); err != nil { //因此这里使用crypto/rand（真随机数生成器）来填充Nonce，使得每次的Nonce都不一样
-		//因为Nonce是真随机生成的，所以即使用同样的密钥加密同样的明文两次，得到的密文也会完全不同。这能有效防止重放攻击
-		return "", err
-	}
+	nonce := genTrueRand(gcm.NonceSize()) //生成随机Nonce(临时随机数，Number used once)，NonceSize()通常是12字节，对于同一个密钥，绝对不能使用相同的Nonce加密两段不同的数据
+	//因此这里使用真随机数生成器来填充Nonce，使得每次的Nonce都不一样，因为Nonce是真随机生成的，所以即使用同样的密钥加密同样的明文两次，得到的密文也会完全不同。这能有效防止重放攻击
 	ciphertext := gcm.Seal(nonce, nonce, plaintext, nil) //实际的加密操作
 	//Seal()函数的参数详解：
 	//dst: 目标切片，加密后的结果（密文+Tag）会追加到这个切片后面，如果传入nonce则最终结果为“[12字节Nonce]+[加密后的内容]+[16字节Tag]”

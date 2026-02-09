@@ -14,7 +14,7 @@ type Cert struct { //凭证信息结构体
 	SK string `json:"sk"`
 }
 
-var currentSecret = genRandSecret()                              //动态生成[]byte类型的密钥
+var currentSecret = genTrueRand(32)                              //动态生成[]byte类型的密钥
 var secretStr = base64.StdEncoding.EncodeToString(currentSecret) //将密钥转换为String类型
 
 func getConfPath() (string, error) { //获取dBackup配置文件的完整路径
