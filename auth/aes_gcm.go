@@ -38,20 +38,21 @@ func encrypt(plaintext, secret []byte) (string, error) { //使用AES-GCM算法�
 	return base64.StdEncoding.EncodeToString(ciphertext), nil //由于加密后的密文是二进制字节流，所以这里需要将其转换为Base64字符串格式，以便写入配置文件中
 }
 
-func decrypt(ciphertext, realSecret []byte) ([]byte, error) { //解密
-	block, blockErr := aes.NewCipher(realSecret)
+func decrypt(ciphertext, secret []byte) ([]byte, error) { //解密
+	block, blockErr := aes.NewCipher(secret)
 	if blockErr != nil {
-		return []byte(""), fmt.Errorf("secret可能已被篡改")
+		return []byte(""), fmt.Errorf("secret可能已被篡改") //如果密钥长度不是32字节就会导致AES加密器实例创建失败
 	}
 	gcm, _ := cipher.NewGCM(block)
-	nonceSize := gcm.NonceSize()
-	if len(ciphertext) < nonceSize {
-		return []byte(""), fmt.Errorf("密文数据过短")
+	nonceSize := gcm.NonceSize()     //获取Nonce的大小，通常是12字节
+	if len(ciphertext) < nonceSize { //这里的密文一般是Nonce+实际密文+Tag，因此其长度不应该小于12字节
+		return []byte(""), fmt.Errorf("auth数据过短")
 	}
-	nonce, actualCiphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
-	plaintext, err := gcm.Open(nil, nonce, actualCiphertext, nil)
+	nonce, actualCiphertext := ciphertext[:nonceSize], ciphertext[nonceSize:] //分离Nonce和实际的密文，从传入的密文中切分出前12字节作为Nonce，剩下的才是真正的实际密文
+	plaintext, err := gcm.Open(nil, nonce, actualCiphertext, nil)             //解密操作
+	//dst=nil: 目标缓冲区，告诉函数解密后的明文应该存放在哪里，传入nil后Go会自动分配一块足够大的新切片来存放明文并返回
 	if err != nil {
-		return []byte(""), fmt.Errorf("解密校验失败（密钥不匹配或数据损坏）")
+		return []byte(""), fmt.Errorf("auth解密失败")
 	}
 	return plaintext, nil
 }
