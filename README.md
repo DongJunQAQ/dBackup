@@ -1,33 +1,43 @@
 # dBackup: 华为云备份工具
 
-一个基于华为云的备份工具，通过命令行的方式备份虚拟机、云硬盘、对象存储桶、快照等，当发生病毒入侵、人为误删除、软硬件故障等事件时，可将数据恢复到任意备份点。
+一个基于华为云的备份工具，通过命令行的方式备份虚拟机、云硬盘、对象存储桶、快照等，当发生病毒入侵、人为误删除、软硬件故障等事件时，可通过备份将云资源数据恢复到任意还原点。
 
-## 构建：
+## 构建项目：
 
 - 编译项目生成二进制文件：
 
 ```
 [root@localhost ~]# git clone https://github.com/DongJunQAQ/dBackup.git
 [root@localhost ~]# cd dBackup/
-[root@ecs-1622 rc4ctl-master]# make
+[root@localhost dBackup]# make
 Start compiling this project on the  platform...
-go build -o ./bin/rc4ctl ./main.go
-Compilation completed: ./bin/rc4ctl
+go build -o ./bin/dBackup ./main.go
+Compilation completed: ./bin/dBackup
 ```
 
-执行完此命令后会在./bin目录下生成名为rc4ctl的可执行文件；
+执行完此命令后会在./bin目录下生成名为dBackup的可执行文件；
 
 - 验证是否安装成功：
 
 ```
-[root@ecs-1622 rc4ctl-master]# cd ./bin/ && ./rc4ctl -v
-rc4ctl version 0.1.0
+[root@localhost dBackup]# cd ./bin/ && ./dBackup -v
+
+      _ ____             _                
+     | |  _ \           | |               
+   __| | |_) | __ _  ___| | ___   _ _ __  
+  / _' |  _ < / _` |/ __| |/ / | | | '_ \
+ | (_| | |_) | (_| | (__|   <| |_| | |_) |
+  \__,_|____/ \__,_|\___|_|\_\\__,_| .__/ 
+                                   | |    
+                                   |_|    
+
+Version: v0.1.0
 ```
 
 - 清除编译产物：
 
 ```
-[root@ecs-1622 rc4ctl-master]# make clean
+[root@localhost dBackup]# make clean
 Cleaning compilation artifacts...
 rm -rf ./bin
 Cleanup completed
@@ -35,15 +45,15 @@ Cleanup completed
 
 
 
-## 命令自动补全：
+## 命令行自动补全：
 
 ```
-
+[root@localhost bin]# ./dBackup completion bash > /etc/bash_completion.d/dBackup
 ```
 
 执行完此命令后重新进入bash即可获取命令行自动补全功能；
 
-如果下载的是Release文件则需要先将dBackup-linux-amd64重命名为dBackup之后再执行以上步骤。
+如果是直接从Release页面下载的可执行文件则需要先将dBackup-linux-amd64重命名为dBackup之后再执行以上步骤。
 
 
 
@@ -112,7 +122,10 @@ Use "dBackup vault [command] --help" for more information about a command.
 使用AK（Access Key ID）和SK（Secret Access Key）登录至华为云并使用AES-GCM算法加密后存储至配置文件中。其是用户在华为云的长期身份凭证，华为云通过AK识别访问用户的身份，通过SK对请求数据进行签名验证，用于确保请求的机密性、完整性和请求者身份的正确性。通常来说AK和SK非常重要绝对不能发生泄露，因此dBackup使用动态生成的真随机密钥以及AES-GCM算法来加密AK与SK。
 
 ```
-
+[root@localhost ~]# dBackup login 
+请输入AK:                     
+请输入SK:                                         
+SUCCESS  AK/SK已安全保存至: /root/.dbackup_config.json
 ```
 
 
