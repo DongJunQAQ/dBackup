@@ -21,7 +21,7 @@ func CreateCheckpoint(vaultId string) error { //为存储库创建备份还原�
 	response, err := client.CreateCheckpoint(request)
 	if err == nil { //当创建备份点无报错
 		if response.Checkpoint != nil { //且还原点信息不为空时，说明执行备份成功
-			pterm.Success.Printf("存储库%s正在执行备份请稍后...", vaultId)
+			pterm.Success.Printf("存储库%s正在执行备份请稍后...\n", vaultId)
 		}
 	} else {
 		var serviceErr *sdkerr.ServiceResponseError
