@@ -194,6 +194,7 @@ SUCCESS  存储库f1840521-6103-4bf3-9198-df019ee51d22正在执行备份请稍�
 登出华为云并删除存放验证信息的配置文件。
 
 ```
-
+[root@localhost ~]# dBackup logout 
+SUCCESS  已成功登出
 ```
 
