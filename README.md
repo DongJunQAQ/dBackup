@@ -134,8 +134,15 @@ SUCCESS  AK/SK已安全保存至: /root/.dbackup_config.json
 
 在执行备份前通常需要使用此命令来查询要备份云资源的唯一ID。
 
-```
+- 查询云服务器资源：
 
+```
+[root@localhost ~]# dBackup resource --ecs 
+┌──────────────────────────────────────────────────────┐
+| 服务器ID                             | 服务器名称    |
+| 3d04b062-ff71-467e-bf6b-0e0412d89788 | ecs-d872-2d89 |
+└──────────────────────────────────────────────────────┘
+ SUCCESS  共查询到 1 台ECS服务器
 ```
 
 
@@ -147,19 +154,26 @@ SUCCESS  AK/SK已安全保存至: /root/.dbackup_config.json
 - 创建存储库：
 
 ```
-
-```
-
-- 列出存储库：
-
-```
-
+[root@localhost ~]# dBackup vault create --name my-test --size 20
+f1840521-6103-4bf3-9198-df019ee51d22
 ```
 
 - 将指定的云资源添加至存储库中：
 
 ```
+[root@localhost ~]# dBackup vault add --vault f1840521-6103-4bf3-9198-df019ee51d22 --resources 3d04b062-ff71-467e-bf6b-0e0412d89788 
+3d04b062-ff71-467e-bf6b-0e0412d89788
+```
 
+- 列出存储库：
+
+```
+[root@localhost ~]# dBackup vault list 
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+| 存储库ID                             | 存储库名称 | 容量(GB) | 关联资源数量 | 资源ID列表    |
+| f1840521-6103-4bf3-9198-df019ee51d22| my-test  | 20       | 1          | 3d04b062... |
+└──────────────────────────────────────────────────────────────────────────────────────┘
+ SUCCESS  共查询到 1 个CBR存储库
 ```
 
 
@@ -169,7 +183,8 @@ SUCCESS  AK/SK已安全保存至: /root/.dbackup_config.json
 对存储库执行备份，即生成备份还原点。
 
 ```
-
+[root@localhost ~]# dBackup backup --vault f1840521-6103-4bf3-9198-df019ee51d22
+b6d9feb8-334d-4c6a-84a4-5ef28926fd7e
 ```
 
 
