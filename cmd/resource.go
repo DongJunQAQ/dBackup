@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"dBackup/resource"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +15,9 @@ var resourceCmd = &cobra.Command{
 		ecs, _ := cmd.Flags().GetBool("ecs")
 		if ecs {
 			resource.ListEcs()
+		} else { //如果用户没有输入flag则提醒用户并打印帮助信息
+			pterm.Error.Println("无效命令")
+			_ = cmd.Help()
 		}
 	},
 }
@@ -21,5 +25,5 @@ var resourceCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(resourceCmd)
 	var ecs bool
-	resourceCmd.Flags().BoolVarP(&ecs, "ecs", "e", true, "列出ECS服务器")
+	resourceCmd.Flags().BoolVarP(&ecs, "ecs", "e", false, "列出ECS服务器")
 }
