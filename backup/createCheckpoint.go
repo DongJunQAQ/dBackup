@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdkerr"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/model"
+	"github.com/pterm/pterm"
 )
 
 func CreateCheckpoint(vaultId string) error { //为存储库创建备份还原点，手动备份存储库中所有的资源
@@ -18,10 +19,9 @@ func CreateCheckpoint(vaultId string) error { //为存储库创建备份还原�
 		Checkpoint: checkpointbody,
 	}
 	response, err := client.CreateCheckpoint(request)
-	if err == nil {
-		if response.Checkpoint != nil {
-			fmt.Println(response.Checkpoint.Id) //打印还原点ID
-			return nil
+	if err == nil { //当创建备份点无报错
+		if response.Checkpoint != nil { //且还原点信息不为空时，说明执行备份成功
+			pterm.Success.Printf("存储库%s正在执行备份请稍后...", vaultId)
 		}
 	} else {
 		var serviceErr *sdkerr.ServiceResponseError
