@@ -2,9 +2,11 @@ package auth
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"github.com/bytedance/sonic"
 	"github.com/pterm/pterm"
+	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
 )
@@ -24,6 +26,24 @@ func getConfPath() (string, error) { //获取dBackup配置文件的完整路径
 	}
 	filePath := filepath.Join(homeDir, ".dbackup_config.json") //拼接完整路径
 	return filePath, nil
+}
+
+func readConfigFile() *viper.Viper { //读取配置文件中字段的内容
+	config := viper.New()
+	home, _ := os.UserHomeDir() //获取用户的家目录路径
+	config.AddConfigPath(home)
+	config.SetConfigType("json")
+	config.SetConfigName(".dbackup_config")
+	err := config.ReadInConfig()
+	if err != nil {
+		var configFileNotFoundError viper.ConfigFileNotFoundError //文件不存在的错误
+		if errors.As(err, &configFileNotFoundError) {             //判断此错误是否为“文件不存在”的错误
+			pterm.Error.Println("配置文件不存在(请先使用login子命令登录)")
+		} else {
+			panic(fmt.Errorf("读取配置文件错误：%w", err))
+		}
+	}
+	return config
 }
 
 func SaveAkSk(ak string, sk string) { //保存ak和sk至本地文件
@@ -54,20 +74,9 @@ func SaveAkSk(ak string, sk string) { //保存ak和sk至本地文件
 }
 
 func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的ak/sk并解密
-	filePath, err := getConfPath() //获取配置文件路径
-	if err != nil {
-		return "", "", fmt.Errorf("无法获取配置文件的路径: %v", err)
-	}
-	fileData, err := os.ReadFile(filePath) //读取配置文件内容
-	if err != nil {
-		return "", "", fmt.Errorf("读取配置文件失败(请先使用login子命令登录): %v", err)
-	}
-	//解析外层JSON(即获取 {"auth": "..."} 中的字符串)
-	var wrapper map[string]string                               //用来存储反序列化后的Go对象
-	if err := sonic.Unmarshal(fileData, &wrapper); err != nil { //将[]byte字节流类型反序列化为Go对象
-		return "", "", fmt.Errorf("文件格式解析失败: %v", err)
-	}
-	authBase64 := wrapper["auth"] //存储Base64格式的auth字段中的内容
+	conf := readConfigFile()
+	authBase64 := conf.GetString("auth") //以字符串格式获取auth字段中的内容(base64编码)
+	secretBase64 := conf.GetString("secret")
 	//标准的Base64编码是4字符一组，如果在合法的Base64字符串末尾加上不足4字符的内容，
 	//Base64解码器在处理时，如果这多出的字符不足以构成一个新的有效字节，
 	//解码器可能会忽略末尾不完整的位，也就使得在密文后面添加了不足4字符的内容后会导致密文依旧有效，
@@ -75,17 +84,16 @@ func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的
 	if len(authBase64)%4 != 0 {
 		return "", "", fmt.Errorf("auth长度错误")
 	}
-	ciphertext, _ := base64.StdEncoding.DecodeString(authBase64) //将base64格式的auth解码为[]byte字节流格式
-	secretBase64 := wrapper["secret"]                            //存储Base64格式的secret字段中的内容
 	if len(secretBase64)%4 != 0 {
 		return "", "", fmt.Errorf("secret长度错误")
 	}
-	secret, _ := base64.StdEncoding.DecodeString(secretBase64) //将base64格式的secret解码为[]byte字节流格式
-	plaintext, err := decrypt(ciphertext, secret)              //使用密钥解密
+	ciphertext, _ := base64.StdEncoding.DecodeString(authBase64) //将base64字符串格式的auth解码为[]byte字节流格式
+	secret, _ := base64.StdEncoding.DecodeString(secretBase64)   //将base64字符串格式的secret解码为[]byte字节流格式
+	plaintext, err := decrypt(ciphertext, secret)                //使用密钥解密
 	if err != nil {
 		return "", "", fmt.Errorf("解密失败: %v", err)
 	}
 	var aksk Cert
-	_ = sonic.Unmarshal(plaintext, &aksk) //将解密获得的[]byte字节流格式的明文反序列化Go对象
+	_ = sonic.Unmarshal(plaintext, &aksk) //将解密获得的[]byte字节流格式的明文反序列化为Go对象
 	return aksk.AK, aksk.SK, nil
 }
