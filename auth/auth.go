@@ -28,7 +28,7 @@ func getConfPath() (string, error) { //获取dBackup配置文件的完整路径
 	return filePath, nil
 }
 
-func readConfigFile() *viper.Viper { //读取配置文件中字段的内容
+func getConfigFile() *viper.Viper { //获取配置文件中字段的内容
 	config := viper.New()
 	home, _ := os.UserHomeDir() //获取用户的家目录路径
 	config.AddConfigPath(home)
@@ -74,7 +74,7 @@ func SaveAkSk(ak string, sk string) { //保存ak和sk至本地文件
 }
 
 func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的ak/sk并解密
-	conf := readConfigFile()
+	conf := getConfigFile()
 	authBase64 := conf.GetString("auth") //以字符串格式获取auth字段中的内容(base64编码)
 	secretBase64 := conf.GetString("secret")
 	//标准的Base64编码是4字符一组，如果在合法的Base64字符串末尾加上不足4字符的内容，
