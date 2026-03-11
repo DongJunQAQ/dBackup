@@ -16,7 +16,7 @@ var logoutCmd = &cobra.Command{
 		filePath := filepath.Join(homeDir, ".dbackup_config.json")
 		err := os.Remove(filePath)
 		if err != nil {
-			pterm.Error.Printf("删除配置文件失败: %v", err)
+			pterm.Error.Printf("删除配置文件失败: %v\n", err)
 			os.Exit(1)
 		}
 		pterm.Success.Println("已成功登出")
