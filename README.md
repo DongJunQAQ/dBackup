@@ -34,12 +34,24 @@ Compilation completed: ./bin/dBackup
 Version: v0.2.0
 ```
 
+- 生成man手册：
+
+```
+[root@localhost dBackup]# make doc
+Generate man page file...
+./bin/dBackup man
+SUCCESS  man手册已生成到: /root/dBackup/doc
+INFO  将生成的.1文件复制到/usr/share/man/man1/后，即可使用man dBackup命令查看手册
+\cp doc/* /usr/share/man/man1/
+Generate completed
+```
+
 - 清除编译产物：
 
 ```
 [root@localhost dBackup]# make clean
 Cleaning compilation artifacts...
-rm -rf ./bin
+rm -rf ./bin ./doc
 Cleanup completed
 ```
 
