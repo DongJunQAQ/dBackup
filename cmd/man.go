@@ -12,7 +12,7 @@ import (
 var manCmd = &cobra.Command{
 	Use:   "man",
 	Short: "生成dBackup的man手册页",
-	Long:  `生成dBackup命令的man手册页文件到当前工作目录`,
+	Long:  `生成dBackup命令的man手册页文件到doc目录下`,
 	Run: func(cmd *cobra.Command, args []string) {
 		outDir := "doc"
 		if err := os.Mkdir(outDir, 0755); // 创建man手册的输出目录
