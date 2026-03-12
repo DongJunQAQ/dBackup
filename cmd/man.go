@@ -33,7 +33,7 @@ var manCmd = &cobra.Command{
 		pwd, _ := os.Getwd()                   //获取当前工作路径
 		fullPath := filepath.Join(pwd, outDir) //拼接路径获得完整路径
 		pterm.Success.Printf("man手册已生成到: %s\n", fullPath)
-		pterm.Success.Println("提示：将生成的.1文件复制到/usr/share/man/man1/后，即可用man dBackup命令查看手册")
+		pterm.Info.Println("将生成的.1文件复制到/usr/share/man/man1/后，即可使用man dBackup命令查看手册")
 	},
 }
 
