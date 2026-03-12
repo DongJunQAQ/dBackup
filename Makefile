@@ -21,7 +21,7 @@ endif
 ## build: Compile Project
 build:
 	@echo "Start compiling this project on the $(OS) platform..."
-	go build -o $(BINARY_PATH) $(MAIN_PACKAGE)  # 在Makefile的规则中，要执行的shell命令必须以一个制表符（Tab）开头，而不能是空格
+	go build -o $(BINARY_PATH) $(MAIN_PACKAGE)
 	@echo "Compilation completed: $(BINARY_PATH)"
 
 ## clean: Clean Artifacts
