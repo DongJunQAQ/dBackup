@@ -33,7 +33,7 @@ clean:
 ## doc: Generate man Pages In Linux Systems
 doc:
 	@echo "Generate man page file..."
-	./$(BINARY_PATH)/$(MAIN_PACKAGE) man
+	$(BINARY_PATH)/$(BINARY_NAME) man
 	\cp doc/* /usr/share/man/man1/
 	@echo "Generate completed"
 
