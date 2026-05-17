@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Cert struct { //凭证信息结构体
@@ -48,8 +49,8 @@ func getConfigFile() *viper.Viper { //获取配置文件中字段的内容
 
 func SaveAkSk(ak string, sk string) { //保存ak和sk至本地文件
 	aksk := Cert{
-		AK: ak,
-		SK: sk,
+		AK: strings.TrimSpace(ak), //自动移除字符串ak开头和结尾的所有空白字符，不会修改字符串中间的内容
+		SK: strings.TrimSpace(sk),
 	}
 	content, _ := sonic.Marshal(aksk)         //将凭证结构体序列化为[]byte类型
 	auth, err := encrypt(content, secretByte) //加密ak/sk结构体，得到auth字段中的内容
@@ -95,5 +96,5 @@ func LoadAkSk() (string, string, error) { //从本地文件中读取加密后的
 	}
 	var aksk Cert
 	_ = sonic.Unmarshal(plaintext, &aksk) //将解密获得的[]byte字节流格式的明文反序列化为Go对象
-	return aksk.AK, aksk.SK, nil
+	return strings.TrimSpace(aksk.AK), strings.TrimSpace(aksk.SK), nil
 }
